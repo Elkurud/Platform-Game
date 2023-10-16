@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import Player from "./classes/Player";
 import { handleKeyDown, handleKeyUp } from "./eventListeners/eventListeners";
+import Sprite from "./classes/Sprite";
+import { collisionsLevel1 } from "./collisions/collisions";
+import { CollisionBlock } from "./classes/CollisionBlock";
+import { createObjectsFrom2DArray, parse2DArray } from "./utils/utils";
+
 function App() {
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
   const [c, setC] = useState(null);
-  const [gravity, setGravity] = useState(0.5);
+  const [gravity, setGravity] = useState(0.8);
+  // const [imageSrc, setImageSrc] = useState()
   const [keys, setKeys] = useState({
     d: {
       pressed: false,
@@ -26,7 +32,8 @@ function App() {
     };
 
     setCanvas(canvasRef.current);
-    setC(canvasRef.current.getContext("2d"));
+    const context = canvasRef.current.getContext("2d")
+    setC(context);
 
     if (canvas && c) {
       canvas.width = 1024;
@@ -39,44 +46,31 @@ function App() {
     }
   }, []);
 
-
-  class Sprite {
-    constructor({position, imageSrc, width, height }) {
-      this.position = position
-      this.image = new Image()
-      this.image.src = imageSrc
-      this.width = width;
-      this.height = height;
-    }
-    draw() {
-      c.drawImage(this.image, this.position.x, this.position.y, this.width, this.height)
-    }
-
-  }
+  const parsedCollisions = parse2DArray(collisionsLevel1)
+  const collisionBlocks = createObjectsFrom2DArray(parsedCollisions, c)
 
   const backgroundLevel1 = new Sprite({
     position: { x: 0, y: 0 },
     imageSrc: './src/assets/Level1.png',
-    width: canvas.width,
-    height: canvas.height
+    c,
   })
 
-  const player = new Player(
-    {
-      x: 200,
-      y: 0,
-    },
+  const player = new Player({
     c,
     canvas,
-    gravity
-  );
+    gravity,
+    collisionBlocks,
+    imageSrc: './src/assets/Idle.png'
+  });
+
 
   function animate() {
     if (!c || !canvas) return;
 
-    c.fillStyle = "gray";
-    c.fillRect(0, 0, canvas.width, canvas.height);
     backgroundLevel1.draw()
+    collisionBlocks.forEach(collisionBlock => {
+      collisionBlock.draw()
+    })
 
     player.update();
 
