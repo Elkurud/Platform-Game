@@ -60,7 +60,8 @@ function App() {
     canvas,
     gravity,
     collisionBlocks,
-    imageSrc: './src/assets/Idle.png'
+    imageSrc: './src/assets/Idle.png',
+    frameRate: 2
   });
 
 

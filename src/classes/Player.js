@@ -1,8 +1,8 @@
 import Sprite from "./Sprite";
 
 class Player extends Sprite {
-  constructor({ c, canvas, gravity, collisionBlocks = [], imageSrc }) {
-    super({ imageSrc })
+  constructor({ c, canvas, gravity, collisionBlocks = [], imageSrc, frameRate }) {
+    super({ imageSrc, frameRate })
     this.position = {
       x: 50,
       y: 50
@@ -16,8 +16,6 @@ class Player extends Sprite {
       y: 1,
     };
 
-    this.width = 64;
-    this.height = 64;
     this.sides = {
       bottom: this.position.y + this.height,
     }
@@ -28,6 +26,8 @@ class Player extends Sprite {
   
 
   update() {
+    this.c.fillStyle = 'blue'
+    this.c.fillRect(this.position.x, this.position.y, this.width, this.height)
     this.draw();
 
     this.position.x += this.velocity.x;
