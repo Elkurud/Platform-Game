@@ -1,15 +1,16 @@
 import Sprite from "./Sprite";
 
 class Player extends Sprite {
-  constructor({ c, canvas, gravity, collisionBlocks = [], imageSrc, frameRate }) {
-    super({ imageSrc, frameRate })
+  constructor({ c, canvas, gravity, collisionBlocks = {}, imageSrc, frameRate, animations }) {
+    super({ imageSrc, frameRate, animations })
     this.position = {
-      x: 50,
-      y: 50
+      x: 65,
+      y: 20
     } 
     this.c = c;
     this.canvas = canvas
     this.gravity = gravity
+    this.level = 1
 
     this.velocity = {
       x: 0,
@@ -20,26 +21,40 @@ class Player extends Sprite {
       bottom: this.position.y + this.height,
     }
     this.buffer = 0.01
-    this.collisionBlocks = collisionBlocks
-
+    if (collisionBlocks.length > 0) {
+      this.objects = {
+        collisions: collisionBlocks.collisions,
+        next: collisionBlocks.next,
+        kill: collisionBlocks.kill
+      }
+    }
   }
   
 
   update() {
-    this.c.fillStyle = 'blue'
-    this.c.fillRect(this.position.x, this.position.y, this.width, this.height)
     this.draw();
 
     this.position.x += this.velocity.x;
     this.checkForHorizontalCollision()
     this.apllyGravity()
     this.checkForVerticalCollision()
+    this.checkForNextLevel()
+    this.checkForDeath()
   
   }
 
+  switchSprite(name) {
+    if (this.image === this.animations[name].image) return
+    this.currentFrame = 0
+    this.image = this.animations[name].image
+    this.frameRate = this.animations[name].frameRate
+    this.frameBuffer = this.animations[name].frameBuffer
+  }
+
   checkForHorizontalCollision() {
-    for (let i = 0; i < this.collisionBlocks.length; i++) {
-      const collisionBlock = this.collisionBlocks[i]
+    if(!this.objects) return
+    for (let i = 0; i < this.objects.collisions.length; i++) {
+      const collisionBlock = this.objects.collisions[i]
       if (this.position.x <= collisionBlock.position.x + collisionBlock.width && 
         this.position.x + this.width >= collisionBlock.position.x &&
         this.position.y + this.height >= collisionBlock.position.y &&
@@ -64,8 +79,9 @@ class Player extends Sprite {
   }
 
   checkForVerticalCollision() {
-    for (let i = 0; i < this.collisionBlocks.length; i++) {
-      const collisionBlock = this.collisionBlocks[i]
+    if(!this.objects) return
+    for (let i = 0; i < this.objects.collisions.length; i++) {
+      const collisionBlock = this.objects.collisions[i]
       if (this.position.x <= collisionBlock.position.x + collisionBlock.width && 
         this.position.x + this.width >= collisionBlock.position.x &&
         this.position.y + this.height >= collisionBlock.position.y &&
@@ -83,6 +99,42 @@ class Player extends Sprite {
             break
           }
       }
+    }
+  }
+
+  checkForNextLevel() {
+    if(!this.objects) return
+    for (let i = 0; i < this.objects.next.length; i++) {
+      const nextLevelBlock = this.objects.next[i]
+      if (this.position.x <= nextLevelBlock.position.x + nextLevelBlock.width && 
+        this.position.x + this.width >= nextLevelBlock.position.x &&
+        this.position.y + this.height >= nextLevelBlock.position.y &&
+        this.position.y <= nextLevelBlock.position.y + nextLevelBlock.height
+        ) {
+          if (this.velocity.x > 0) {
+            this.level++
+            this.position.y = 20
+            this.position.x = 65
+            
+            break
+          }
+      }
+    }
+  }
+
+  checkForDeath() {
+    if(!this.objects) return
+    for (let i = 0; i < this.objects.kill.length; i++) {
+      const collisionBlock = this.objects.kill[i]
+      if (this.position.x <= collisionBlock.position.x + collisionBlock.width && 
+        this.position.x + this.width >= collisionBlock.position.x &&
+        this.position.y + this.height >= collisionBlock.position.y &&
+        this.position.y <= collisionBlock.position.y + collisionBlock.height
+        ) {
+          this.position.y = 20
+          this.position.x = 65
+          break
+        }
     }
   }
 

@@ -1,4 +1,6 @@
 import { CollisionBlock } from "../classes/CollisionBlock";
+import { KillBlock } from "../classes/KillBlock";
+import { nextLevelBlock } from "../classes/NextLevelBlock";
 
 export function parse2DArray(arr) {
     const rows = [];
@@ -9,12 +11,30 @@ export function parse2DArray(arr) {
 }
 
 export function createObjectsFrom2DArray(arr, c) {
-    const objects = [];
+    const objects = {
+      collisions: [],
+      next: [],
+      kill: []
+    };
     arr.forEach((row, y) => {
       row.forEach((symbol, x) => {
-        if (symbol === 145) {
-          objects.push(
+        if (symbol === 800) {
+          objects.collisions.push(
             new CollisionBlock({
+              position: { x: x * 64, y: y * 64 },
+              c
+            })
+          );
+        } else if (symbol === 700) {
+          objects.next.push(
+            new nextLevelBlock({
+              position: { x: x * 64, y: y * 64 },
+              c
+            })
+          );
+        } else if (symbol === 600) {
+          objects.kill.push(
+            new KillBlock({
               position: { x: x * 64, y: y * 64 },
               c
             })
