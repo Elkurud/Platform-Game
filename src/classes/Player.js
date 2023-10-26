@@ -5,7 +5,7 @@ class Player extends Sprite {
     super({ imageSrc, frameRate, animations })
     this.position = {
       x: 65,
-      y: 20
+      y: 330
     } 
     this.c = c;
     this.canvas = canvas
@@ -17,9 +17,6 @@ class Player extends Sprite {
       y: 1,
     };
 
-    this.sides = {
-      bottom: this.position.y + this.height,
-    }
     this.buffer = 0.01
     if (collisionBlocks.length > 0) {
       this.objects = {
@@ -29,18 +26,37 @@ class Player extends Sprite {
       }
     }
   }
+
+  
   
 
   update() {
     this.draw();
 
     this.position.x += this.velocity.x;
+
+    this.updateHitbox()
+
     this.checkForHorizontalCollision()
     this.apllyGravity()
+
+    this.updateHitbox()
+
     this.checkForVerticalCollision()
     this.checkForNextLevel()
     this.checkForDeath()
   
+  }
+
+  updateHitbox() {
+    this.hitbox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y + 26,
+      },
+      width: this.width,
+      height: this.height - 26
+    }
   }
 
   switchSprite(name) {
@@ -55,10 +71,11 @@ class Player extends Sprite {
     if(!this.objects) return
     for (let i = 0; i < this.objects.collisions.length; i++) {
       const collisionBlock = this.objects.collisions[i]
-      if (this.position.x <= collisionBlock.position.x + collisionBlock.width && 
-        this.position.x + this.width >= collisionBlock.position.x &&
-        this.position.y + this.height >= collisionBlock.position.y &&
-        this.position.y <= collisionBlock.position.y + collisionBlock.height
+      if (
+        this.hitbox.position.x <= collisionBlock.position.x + collisionBlock.width && 
+        this.hitbox.position.x + this.hitbox.width >= collisionBlock.position.x &&
+        this.hitbox.position.y + this.hitbox.height >= collisionBlock.position.y &&
+        this.hitbox.position.y <= collisionBlock.position.y + collisionBlock.height
         ) {
           if (this.velocity.x < 0) {
             this.position.x = collisionBlock.position.x + collisionBlock.width + this.buffer
@@ -82,14 +99,16 @@ class Player extends Sprite {
     if(!this.objects) return
     for (let i = 0; i < this.objects.collisions.length; i++) {
       const collisionBlock = this.objects.collisions[i]
-      if (this.position.x <= collisionBlock.position.x + collisionBlock.width && 
-        this.position.x + this.width >= collisionBlock.position.x &&
-        this.position.y + this.height >= collisionBlock.position.y &&
-        this.position.y <= collisionBlock.position.y + collisionBlock.height
+      if (
+        this.hitbox.position.x <= collisionBlock.position.x + collisionBlock.width && 
+        this.hitbox.position.x + this.hitbox.width >= collisionBlock.position.x &&
+        this.hitbox.position.y + this.hitbox.height >= collisionBlock.position.y &&
+        this.hitbox.position.y <= collisionBlock.position.y + collisionBlock.height
         ) {
           if (this.velocity.y < 0) {
+            const offset = this.hitbox.position.y - this.position.y
             this.velocity.y = 0
-            this.position.y = collisionBlock.position.y + collisionBlock.height + this.buffer
+            this.position.y = collisionBlock.position.y + collisionBlock.height - offset + this.buffer
             break
           }
 
@@ -111,9 +130,10 @@ class Player extends Sprite {
         this.position.y + this.height >= nextLevelBlock.position.y &&
         this.position.y <= nextLevelBlock.position.y + nextLevelBlock.height
         ) {
-          if (this.velocity.x > 0) {
+          if (this.velocity.x !== 0) {
             this.level++
-            this.position.y = 20
+            if ( this.level === 3 ) this.position.y = 300
+            else this.position.y = 330
             this.position.x = 65
             
             break
@@ -131,7 +151,8 @@ class Player extends Sprite {
         this.position.y + this.height >= collisionBlock.position.y &&
         this.position.y <= collisionBlock.position.y + collisionBlock.height
         ) {
-          this.position.y = 20
+          if ( this.level === 3 ) this.position.y = 300
+          else this.position.y = 330
           this.position.x = 65
           break
         }

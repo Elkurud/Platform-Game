@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import Player from "./classes/Player";
 import { handleKeyDown, handleKeyUp } from "./eventListeners/eventListeners";
 import Sprite from "./classes/Sprite";
-import { collisionsLevel1, collisionsLevel2, collisionsLevel3, collisionsLevel4,collisionsLevel5 } from "./collisions/collisions";
+import { collisionsLevel1, collisionsLevel2, collisionsLevel3, collisionsLevel4, collisionsLevel5 } from "./collisions/collisions";
 import { CollisionBlock } from "./classes/CollisionBlock";
 import { createObjectsFrom2DArray, parse2DArray } from "./utils/utils";
+import animations from "./utils/playerAnimations";
 
 function App() {
   const canvasRef = useRef(null);
@@ -54,34 +55,9 @@ function App() {
     canvas,
     gravity,
     collisionBlocks,
-    imageSrc: './src/assets/Idle.png',
+    imageSrc: './src/assets/idle.png',
     frameRate: 8,
-    animations: {
-      idleRight:{
-        frameRate:8,
-        frameBuffer:8,
-        loop:true,
-        imageSrc: './src/assets/Idle.png',
-      },
-      idleLeft:{
-        frameRate:8,
-        frameBuffer:8,
-        loop:true,
-        imageSrc: './src/assets/IdleLeft.png',
-      },
-      runRight:{
-        frameRate:8,
-        frameBuffer:3,
-        loop:true,
-        imageSrc: './src/assets/Running.png',
-      },
-      runLeft:{
-        frameRate:8,
-        frameBuffer:3,
-        loop:true,
-        imageSrc: './src/assets/RunningLeft.png',
-      },
-    }
+    animations
   });
 
   let levels = {
@@ -93,7 +69,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Level1.png',
+          imageSrc: './src/assets/Caves1.png',
           c,
         })
       }
@@ -106,7 +82,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Level2.png',
+          imageSrc: './src/assets/Caves2.png',
           c,
         })
       }
@@ -119,7 +95,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Level3.png',
+          imageSrc: './src/assets/Caves3.png',
           c,
         })
       }
@@ -132,7 +108,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Level4.png',
+          imageSrc: './src/assets/Caves4.png',
           c,
         })
       }
@@ -145,7 +121,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Level5.png',
+          imageSrc: './src/assets/Final.png',
           c,
         })
       }
@@ -174,16 +150,30 @@ function App() {
     player.update();
 
     player.velocity.x = 0;
+
+
     if (keys.d.pressed) {
-      player.switchSprite('runRight')
       player.velocity.x = 5;
+      if(player.velocity.y < 0) player.switchSprite('jump')
+      else if(player.velocity.y > 0) player.switchSprite('fall')
+      else player.switchSprite('runRight')
       player.lastDirection = 'right'
     }
     else if (keys.a.pressed) {
     player.velocity.x = -5;
-    player.switchSprite('runLeft')
+    if(player.velocity.y < 0) player.switchSprite('jumpLeft')
+    else if(player.velocity.y > 0) player.switchSprite('fallLeft')
+    else player.switchSprite('runLeft')
     player.lastDirection = 'left'
-  } else {
+    }
+    else if(player.velocity.y < 0) {
+      if(player.lastDirection === 'left') player.switchSprite('jumpLeft')
+      if(player.lastDirection === 'right') player.switchSprite('jump')
+    }
+    else if(player.velocity.y > 0) {
+      if(player.lastDirection === 'left') player.switchSprite('fallLeft')
+      if(player.lastDirection === 'right') player.switchSprite('fall')
+    } else {
     if (player.lastDirection === 'left') player.switchSprite('idleLeft')
     else player.switchSprite('idleRight')
   }

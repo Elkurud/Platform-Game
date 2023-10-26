@@ -9,7 +9,7 @@ export function handleKeyDown(event, keys, player) {
       updatedKeys.a.pressed = true;
       break;
     case "w":
-      if (player.velocity.y === 0) player.velocity.y = -20;
+      if (player.velocity.y === 0) player.velocity.y = -15;
 
       break;
   }
