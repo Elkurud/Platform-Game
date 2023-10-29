@@ -3,7 +3,6 @@ import Player from "./classes/Player";
 import { handleKeyDown, handleKeyUp } from "./eventListeners/eventListeners";
 import Sprite from "./classes/Sprite";
 import { collisionsLevel1, collisionsLevel2, collisionsLevel3, collisionsLevel4, collisionsLevel5 } from "./collisions/collisions";
-import { CollisionBlock } from "./classes/CollisionBlock";
 import { createObjectsFrom2DArray, parse2DArray } from "./utils/utils";
 import animations from "./utils/playerAnimations";
 

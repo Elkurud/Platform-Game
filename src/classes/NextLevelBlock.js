@@ -7,7 +7,7 @@ export class nextLevelBlock {
     }
 
     draw() {
-      this.c.fillStyle = 'rgba(0, 255, 0, 0.5)'
-      this.c.fillRect(this.position.x, this.position.y, this.width, this.height)
+      // this.c.fillStyle = 'rgba(0, 255, 0, 0.5)'
+      // this.c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
   }
