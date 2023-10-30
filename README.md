@@ -17,3 +17,8 @@
 ## :iphone: Socials:
 - mail: samukama18@gmail.com
 - linkedin: [/elkurud](https://linkedin.com/in/elkurud)
+
+## 📖 How to Run:
+- npm i
+- npm run dev
+- because of a vite bug, the runnning project will look blank on the browser, just hit ctrl+s on the project, and the game should appear!
