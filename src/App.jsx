@@ -66,7 +66,7 @@ function App() {
     canvas,
     gravity,
     collisionBlocks,
-    imageSrc: './src/assets/idle.png',
+    imageSrc: './assets/idle.png',
     frameRate: 8,
     animations
   });
@@ -80,7 +80,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Caves1.png',
+          imageSrc: './assets/Caves1.png',
           c,
         })
       }
@@ -93,7 +93,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Caves2.png',
+          imageSrc: './assets/Caves2.png',
           c,
         })
       }
@@ -106,7 +106,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Caves3.png',
+          imageSrc: './assets/Caves3.png',
           c,
         })
       }
@@ -119,7 +119,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Caves4.png',
+          imageSrc: './assets/Caves4.png',
           c,
         })
       }
@@ -132,7 +132,7 @@ function App() {
 
         background = new Sprite({
           position: { x: 0, y: 0 },
-          imageSrc: './src/assets/Final.png',
+          imageSrc: './assets/Final.png',
           c,
         })
       }
