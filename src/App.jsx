@@ -7,6 +7,7 @@ import { createObjectsFrom2DArray, parse2DArray } from "./utils/utils";
 import animations from "./utils/playerAnimations";
 
 function App() {
+  const [loading, setLoading] = useState(true);
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
   const [c, setC] = useState(null);
@@ -21,6 +22,20 @@ function App() {
   });
 
   useEffect(() => {
+    if (canvasRef.current) {
+      setLoading(false);
+      setCanvas(canvasRef.current);
+      const context = canvasRef.current.getContext("2d")
+      setC(context);
+
+      initCanvas();
+    }else {
+      setLoading(true);
+      console.log('O canvas não está disponível:', canvasRef.current);
+    }
+  }, [canvasRef, canvas, c]);
+
+  const initCanvas = () => {
     const keyDownHandler = (event) => {
       const newKeys = handleKeyDown(event, keys, player);
       setKeys(newKeys)
@@ -29,10 +44,6 @@ function App() {
       const newKeys = handleKeyUp(event, keys);
       setKeys(newKeys)
     };
-
-    setCanvas(canvasRef.current);
-    const context = canvasRef.current.getContext("2d")
-    setC(context);
 
     if (canvas && c) {
       canvas.width = 1024;
@@ -43,7 +54,8 @@ function App() {
 
       animate();
     }
-  }, []);
+  }
+
   let parsedCollisions
   let collisionBlocks
   let background
@@ -183,6 +195,11 @@ function App() {
 
   return (
     <>
+      {loading ? (
+        <p>Carregando o canvas...</p>
+      ) : (
+        <></>
+      )}
       <canvas ref={canvasRef}></canvas>
     </>
   );
