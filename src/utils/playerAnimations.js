@@ -48,3 +48,5 @@ const animations = {
       imageSrc: './assets/fallLeft.png',
     },
   }
+
+  export default animations
